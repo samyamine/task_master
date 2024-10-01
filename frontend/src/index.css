@@ -60,6 +60,9 @@
 
 @media (prefers-color-scheme: light) {
   :root {
+    width: 700px;
+    /*min-width: fit-content;*/
+    height: 800px;
     color: #213547;
     background-color: #ffffff;
   }
@@ -73,6 +76,9 @@
 
 @layer base {
   :root {
+    width: 700px;
+    /*min-width: fit-content;*/
+    height: 800px;
     --background: 0 0% 100%;
     --foreground: 240 10% 3.9%;
     --card: 0 0% 100%;

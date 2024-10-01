@@ -1,7 +1,7 @@
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 import {AxiosInstance} from "axios";
-import {LEVEL_XP, LEVEL_XP_INCREASER} from "@/lib/consts.ts";
+import {LEVEL_XP, LEVEL_XP_INCREASER, QUEST_XP_REWARD} from "@/lib/consts.ts";
 
 
 // FUNCTIONS
@@ -46,16 +46,82 @@ async function getXp(client: AxiosInstance) {
     }
 }
 
-// async function getTask(client: AxiosInstance, id: string) {
-//     try {
-//         const response = await client.get(`/api/tasks/${id}/`);
-//         console.log(response.data);
-//
-//         return response.data;
-//     } catch (error) {
-//         console.log(error);
-//     }
-// }
+async function getTasks(client: AxiosInstance) {
+    try {
+        const response = await client.get("/api/tasks/");
+        console.log(response.data);
+
+        return response.data;
+
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+async function getQuest(client: AxiosInstance, id: string) {
+    try {
+        const response = await client.get(`/api/quests/${id}/`);
+        console.log("QUEST");
+        console.log(response.data);
+
+        return response.data;
+
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+async function createTask(client: AxiosInstance, data: { title: string, difficulty: number, description: string, deadline: string }) {
+    if (data.difficulty === -1) {
+        console.log("Difficulty has not been provided");
+        return;
+    }
+    if (data.title.length === 0 || data.description.length === 0 || data.deadline.length === 0) {
+        console.log("Please fill all information");
+        return;
+    }
+
+    try {
+        const response = await client.post("/api/tasks/", {
+            title: data.title,
+            description: data.description,
+            completed: false,
+            difficulty: data.difficulty,
+            deadline: new Date(data.deadline),
+            xp_reward: 10 * (data.difficulty + 1),
+        });
+
+        console.log(response.data);
+        return response.data;
+
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+async function createQuest(client: AxiosInstance, data: { name: string, description: string, selectedTasks: number[] }) {
+    if (data.name.length === 0 || data.description.length === 0) {
+        console.log("Please fill all information");
+        return;
+    }
+
+    try {
+        const response = await client.post("/api/quests/", {
+            name: data.name,
+            description: data.description,
+            progress: 0,
+            tasks: data.selectedTasks,
+            completed: false,
+            xp_reward: QUEST_XP_REWARD,
+        });
+
+        console.log(response.data);
+        return response.data;
+
+    } catch (error) {
+        console.log(error);
+    }
+}
 
 async function deleteTask(client: AxiosInstance, id: string) {
     try {
@@ -65,6 +131,17 @@ async function deleteTask(client: AxiosInstance, id: string) {
         return response.data;
     } catch (error) {
         console.error("Erreur lors de la suppression de la tâche :", error);
+    }
+}
+
+async function deleteQuest(client: AxiosInstance, id: string) {
+    try {
+        const response = await client.delete(`/api/quests/${id}/`);
+        console.log("Quête supprimée avec succès :", response.data);
+
+        return response.data;
+    } catch (error) {
+        console.error("Erreur lors de la suppression de la quête :", error);
     }
 }
 
@@ -79,6 +156,17 @@ async function updateTask(client: AxiosInstance, id: string, data: { [key: strin
     }
 }
 
+async function updateQuest(client: AxiosInstance, id: string, data: { [key: string]: any }) {
+    try {
+        const response = await client.patch(`/api/quests/${id}/`, data);
+        console.log("Quête validée avec succès:", response.data);
+
+        return response.data;
+    } catch (error) {
+        console.error("Erreur lors de la validation de la quête:", error);
+    }
+}
+
 
 // ENUMS
 enum EDifficulty {
@@ -89,7 +177,7 @@ enum EDifficulty {
 
 
 // CONSTS
-const difficultyBackgrounds = ["bg-emerald-200", "bg-orange-200", "bg-red-200"];
+const difficultyBackgrounds = ["hover:bg-emerald-200 bg-emerald-200", "hover:bg-orange-200 bg-orange-200", "hover:bg-red-200 bg-red-200"];
 const difficultyColors = ["text-emerald-500", "text-orange-500", "text-red-500"];
 const difficultyTexts = ["Easy", "Medium", "Hard"];
 
@@ -97,10 +185,15 @@ export {
     computeLevel,
     EDifficulty,
     formatDateTime,
-    // getTask,
+    getQuest,
+    getTasks,
+    createQuest,
+    createTask,
     getXp,
+    deleteQuest,
     deleteTask,
     updateTask,
+    updateQuest,
     difficultyBackgrounds,
     difficultyColors,
     difficultyTexts,

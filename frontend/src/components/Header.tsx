@@ -9,7 +9,7 @@ export default function Header() {
 
             <nav>
                 <ul className={`flex gap-2 items-center`}>
-                    <li><NavLink to={`dashboard/`}>Dashboard</NavLink></li>
+                    <li><NavLink to={`/`}>Dashboard</NavLink></li>
                     <li><NavLink to={`rewards/`}>Rewards</NavLink></li>
                     <li><NavLink to={`taskboard/`}>Taskboard</NavLink></li>
                     <li><NavLink to={`questboard/`}>Questboard</NavLink></li>

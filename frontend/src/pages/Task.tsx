@@ -33,41 +33,7 @@ function Task() {
         }
     };
 
-    // const deleteTask = async () => {
-    //     try {
-    //         const response = await client.delete(`/api/tasks/${id}/`);
-    //         console.log("Tâche supprimée avec succès :", response.data);
-    //
-    //         navigate("/taskboard/");
-    //     } catch (error) {
-    //         console.error("Erreur lors de la suppression de la tâche :", error);
-    //     }
-    // };
-
-    // const updateTask = async (data: { [key: string]: any }) => {
-    //     try {
-    //         const response = await client.patch(`/api/tasks/${id}/`, data);
-    //         console.log("Tâche validée avec succès :", response.data);
-    //         window.location.reload();
-    //     } catch (error) {
-    //         console.error("Erreur lors de la validation de la tâche :", error);
-    //     }
-    // };
-
     useEffect(() => {
-        // getTask(client, String(id)).then(response => {
-        //     console.log("RESPONSE")
-        //     console.log(response)
-        //     setTask(response.data);
-        //
-        //     const now = new Date(); // Date actuelle
-        //     const oneYearFromNow = new Date();
-        //     oneYearFromNow.setFullYear(now.getFullYear() + 1);
-        //
-        //     setDeadline(formatDateTime(now));
-        //     setMaxDateTime(formatDateTime(oneYearFromNow));
-        //     window.location.reload();
-        // });
         getTask().then(response => {
             console.log("RESPONSE")
             console.log(response)
@@ -93,11 +59,11 @@ function Task() {
                 </h1>
 
                 <div>
-                    <Button className={`mr-2 bg-emerald-500`} onClick={() => updateTask(client, String(id), {completed: true}).then(r => {
+                    <Button className={`mr-2 ${task.completed ? "bg-black" : "bg-emerald-500"}`} onClick={() => updateTask(client, String(id), {completed: !task.completed}).then(r => {
                             console.log(r);
                             window.location.reload();
                         })}>
-                        Done
+                        {task.completed ? "Undone" : "Done"}
                     </Button>
                     <Button className={`bg-red-500`} onClick={() => deleteTask(client, String(id)).then(r => {
                             console.log(r);

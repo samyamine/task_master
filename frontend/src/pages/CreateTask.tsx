@@ -3,7 +3,7 @@ import {Input} from "@/components/ui/input.tsx";
 import {useEffect, useState} from "react";
 import {Textarea} from "@/components/ui/textarea.tsx";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select.tsx";
-import {formatDateTime} from "@/lib/utils.ts";
+import {createTask, formatDateTime} from "@/lib/utils.ts";
 import {useAxios} from "@/contexts/AxiosContext.tsx";
 import {useNavigate} from "react-router-dom";
 import {Button} from "@/components/ui/button.tsx";
@@ -14,37 +14,37 @@ function CreateTask() {
 
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
-    const [difficulty, setDifficulty] = useState<number>();
+    const [difficulty, setDifficulty] = useState<number>(-1);
     const [deadline, setDeadline] = useState("");
     const [maxDateTime, setMaxDateTime] = useState("");
 
-    const createTask = async () => {
-        if (typeof difficulty === "undefined") {
-            console.log("Difficulty is undefined");
-            return;
-        }
-        if (title.length === 0 || description.length === 0 || deadline.length === 0) {
-            console.log("Please fill all information");
-            return;
-        }
-
-        try {
-            const response = await client.post("/api/tasks/", {
-                title: title,
-                description: description,
-                completed: false,
-                difficulty: difficulty,
-                deadline: new Date(deadline),
-                xp_reward: 10 * (difficulty + 1),
-            });
-
-            console.log(response.data);
-            navigate("/taskboard/");
-
-        } catch (error) {
-            console.log(error);
-        }
-    };
+    // const createTask = async () => {
+    //     if (typeof difficulty === "undefined") {
+    //         console.log("Difficulty is undefined");
+    //         return;
+    //     }
+    //     if (title.length === 0 || description.length === 0 || deadline.length === 0) {
+    //         console.log("Please fill all information");
+    //         return;
+    //     }
+    //
+    //     try {
+    //         const response = await client.post("/api/tasks/", {
+    //             title: title,
+    //             description: description,
+    //             completed: false,
+    //             difficulty: difficulty,
+    //             deadline: new Date(deadline),
+    //             xp_reward: 10 * (difficulty + 1),
+    //         });
+    //
+    //         console.log(response.data);
+    //         navigate("/taskboard/");
+    //
+    //     } catch (error) {
+    //         console.log(error);
+    //     }
+    // };
 
     useEffect(() => {
         const now = new Date(); // Date actuelle
@@ -101,7 +101,10 @@ function CreateTask() {
                            onChange={(e) => setDeadline(e.target.value)}/>
                 </div>
 
-                <Button className={`mt-5`} onClick={() => createTask()}>
+                <Button className={`mt-5`} onClick={() => createTask(client,  {title, description, deadline, difficulty}).then(r => {
+                        console.log(r);
+                        navigate("/taskboard/");
+                    })}>
                     Create
                 </Button>
             </div>
