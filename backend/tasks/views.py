@@ -1,56 +1,51 @@
+from django.db.models import Sum
 from django.shortcuts import render
-from rest_framework import viewsets, permissions
+from rest_framework import viewsets
 from .serializers import TaskSerializer, QuestSerializer
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
 from .models import Task, Quest
 
 
 # Create your views here.
-class TaskViewSet(viewsets.ModelViewSet):
+class TaskView(viewsets.ModelViewSet):
     serializer_class = TaskSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    queryset = Task.objects.all()
 
-    def get_queryset(self):
-        return Task.objects.filter(user=self.request.user)
+    def perform_update(self, serializer):
+        instance = serializer.save()
+        # instance.update_quests()
+        if instance.completed:
+            instance.complete_task()
+        else:
+            instance.uncomplete_task()
+
+    def perform_destroy(self, instance):
+        instance.delete()
 
 
-class QuestViewSet(viewsets.ModelViewSet):
+class QuestView(viewsets.ModelViewSet):
     serializer_class = QuestSerializer
-    permission_classes = [permissions.IsAuthenticated]
-
-    def get_queryset(self):
-        return Quest.objects.filter(user=self.request.user)
+    queryset = Quest.objects.all()
 
 
+@api_view(['GET'])
+def total_xp_view(request):
+    total_xp = 0
 
+    completed_tasks = Task.objects.filter(completed=True)
+    for task in completed_tasks:
+        total_xp += task.xp_reward * (task.difficulty + 1)
 
+    completed_quests = Quest.objects.filter(completed=True)
+    quest_xp_sum = completed_quests.aggregate(total_xp=Sum('xp_reward'))
 
-# class TaskView(viewsets.ModelViewSet):
-#     serializer_class = TaskSerializer
-#     queryset = Task.objects.all()
-#
-#
-# class QuestView(viewsets.ModelViewSet):
-#     serializer_class = QuestSerializer
-#     queryset = Quest.objects.all()
+    if quest_xp_sum['total_xp'] is not None:
+        quest_xp = quest_xp_sum['total_xp']
+    else:
+        quest_xp = 0
 
+    total_xp += quest_xp
 
+    return Response({"total_xp": total_xp})
 
-
-
-# from rest_framework.permissions import IsAuthenticated
-#
-# class TaskViewSet(viewsets.ModelViewSet):
-#     queryset = Task.objects.all()
-#     serializer_class = TaskSerializer
-#     permission_classes = [IsAuthenticated]
-#
-#     def perform_create(self, serializer):
-#         serializer.save(user=self.request.user)
-#
-# class QuestViewSet(viewsets.ModelViewSet):
-#     queryset = Quest.objects.all()
-#     serializer_class = QuestSerializer
-#     permission_classes = [IsAuthenticated]
-#
-#     def perform_create(self, serializer):
-#         serializer.save(user=self.request.user)

@@ -5,17 +5,11 @@ from .models import Task, Quest
 class TaskSerializer(serializers.ModelSerializer):
     class Meta:
         model = Task
-        fields = '__all__'
-        read_only_fields = ('user',)
+        # fields = ('id', "title", "description", "completed", "difficulty", "deadline", "xp_reward", "estimated_duration", "created_at", "updated_at")
+        fields = ('id', "title", "description", "completed", "difficulty", "deadline", "xp_reward", "created_at", "updated_at")
 
 
 class QuestSerializer(serializers.ModelSerializer):
     class Meta:
         model = Quest
-        fields = '__all__'
-        read_only_fields = ('user',)
-
-    def create(self, validated_data):
-        validated_data['tasks'] = []
-        quest = Quest.objects.create(**validated_data)
-        return quest
+        fields = ('id', "name", "description", "progress", "tasks", "completed", "xp_reward", "created_at")
