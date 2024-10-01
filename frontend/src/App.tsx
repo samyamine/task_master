@@ -1,15 +1,19 @@
-import Taskboard from "@/pages/TaskBoard.tsx";
 import Header from "@/components/Header.tsx";
+import {AxiosProvider} from "@/contexts/AxiosContext.tsx";
+import {Outlet} from "react-router-dom";
+
 
 function App() {
     return (
-        <>
-            <Header />
+        <AxiosProvider>
+            <>
+                <Header />
 
-            <div className={`px-5 py-5`}>
-                <Taskboard />
-            </div>
-        </>
+                <div className={`p-5`}>
+                    <Outlet />
+                </div>
+            </>
+        </AxiosProvider>
     );
 }
 
