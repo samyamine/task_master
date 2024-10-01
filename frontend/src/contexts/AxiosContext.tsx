@@ -1,12 +1,13 @@
 import React, { createContext, useContext } from "react";
 import axios, { AxiosInstance } from "axios";
+import {BASE_URL} from "@/lib/consts.ts";
 
 
 const AxiosContext = createContext<AxiosInstance | null>(null);
 
 function AxiosProvider({ children }: { children: React.ReactNode }) {
     const client: AxiosInstance = axios.create({
-        baseURL: "http://127.0.0.1:8000",
+        baseURL: BASE_URL,
         // xsrfCookieName: 'csrftoken',
         // xsrfHeaderName: 'X-CSRFToken',
         // withCredentials: true,

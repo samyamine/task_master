@@ -7,13 +7,14 @@ import {Label} from "@/components/ui/label.tsx";
 import {Input} from "@/components/ui/input.tsx";
 import {Textarea} from "@/components/ui/textarea.tsx";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select.tsx";
-import {formatDateTime} from "@/lib/utils.ts";
+import {deleteTask, formatDateTime, updateTask} from "@/lib/utils.ts";
+import CompletionBadge from "@/components/CompletionBadge.tsx";
 
 function Task() {
     const client = useAxios();
     const navigate = useNavigate();
     const {id} = useParams();
-    const [task, setTask] = useState(null);
+    const [task, setTask] = useState<{[key: string]: any} | null>(null);
 
     const [title, setTitle] = useState<string>();
     const [description, setDescription] = useState<string>();
@@ -32,30 +33,44 @@ function Task() {
         }
     };
 
-    const deleteTask = async () => {
-        try {
-            const response = await client.delete(`/api/tasks/${id}/`);
-            console.log("Tâche supprimée avec succès :", response.data);
+    // const deleteTask = async () => {
+    //     try {
+    //         const response = await client.delete(`/api/tasks/${id}/`);
+    //         console.log("Tâche supprimée avec succès :", response.data);
+    //
+    //         navigate("/taskboard/");
+    //     } catch (error) {
+    //         console.error("Erreur lors de la suppression de la tâche :", error);
+    //     }
+    // };
 
-            navigate("/taskboard/");
-        } catch (error) {
-            console.error("Erreur lors de la suppression de la tâche :", error);
-        }
-    };
-
-    const updateTask = async (data: { [key: string]: any }) => {
-        try {
-            const response = await client.patch(`/api/tasks/${id}/`, data);
-            console.log("Tâche validée avec succès :", response.data);
-            window.location.reload();
-        } catch (error) {
-            console.error("Erreur lors de la validation de la tâche :", error);
-        }
-    };
+    // const updateTask = async (data: { [key: string]: any }) => {
+    //     try {
+    //         const response = await client.patch(`/api/tasks/${id}/`, data);
+    //         console.log("Tâche validée avec succès :", response.data);
+    //         window.location.reload();
+    //     } catch (error) {
+    //         console.error("Erreur lors de la validation de la tâche :", error);
+    //     }
+    // };
 
     useEffect(() => {
-        getTask().then(r => {
-            console.log(r);
+        // getTask(client, String(id)).then(response => {
+        //     console.log("RESPONSE")
+        //     console.log(response)
+        //     setTask(response.data);
+        //
+        //     const now = new Date(); // Date actuelle
+        //     const oneYearFromNow = new Date();
+        //     oneYearFromNow.setFullYear(now.getFullYear() + 1);
+        //
+        //     setDeadline(formatDateTime(now));
+        //     setMaxDateTime(formatDateTime(oneYearFromNow));
+        //     window.location.reload();
+        // });
+        getTask().then(response => {
+            console.log("RESPONSE")
+            console.log(response)
 
             const now = new Date(); // Date actuelle
             const oneYearFromNow = new Date();
@@ -78,20 +93,24 @@ function Task() {
                 </h1>
 
                 <div>
-                    <Button className={`mr-2 bg-emerald-500`} onClick={() => updateTask({completed: true})}>
+                    <Button className={`mr-2 bg-emerald-500`} onClick={() => updateTask(client, String(id), {completed: true}).then(r => {
+                            console.log(r);
+                            window.location.reload();
+                        })}>
                         Done
                     </Button>
-                    <Button className={`bg-red-500`} onClick={() => deleteTask()}>
+                    <Button className={`bg-red-500`} onClick={() => deleteTask(client, String(id)).then(r => {
+                            console.log(r);
+                            navigate("/taskboard/");
+                        })}>
                         Delete
                     </Button>
                 </div>
 
             </div>
 
-            <div className={`mb-1 flex items-center gap-2`}>
-                <p className={`mb-4 px-2 py-1 rounded-full text-xs ${task.completed ? "bg-emerald-200 text-emerald-500" : "bg-red-200 text-red-500"}`}>
-                    {task.completed ? "Completed" : "Not Completed"}
-                </p>
+            <div className={`mb-5`}>
+                <CompletionBadge status={task.completed} />
             </div>
 
             <div className={`mb-1 flex items-center gap-2`}>
@@ -157,13 +176,16 @@ function Task() {
                            onChange={(e) => setDeadline(e.target.value)}/>
                 </div>
 
-                <Button className={`mt-5`} onClick={() => updateTask({
-                    title: title ?? task.title,
-                    description: description ?? task.description,
-                    difficulty: difficulty ?? task.difficulty,
-                    deadline:  deadline ? new Date(deadline) : new Date(task.deadline),
-                    xp_reward: difficulty ? 10 * (Number(difficulty) + 1) : 10 * (Number(task.difficulty) + 1),
-                })}>
+                <Button className={`mt-5`} onClick={() => updateTask(client, String(id),{
+                        title: title ?? task.title,
+                        description: description ?? task.description,
+                        difficulty: difficulty ?? task.difficulty,
+                        deadline:  deadline ? new Date(deadline) : new Date(task.deadline),
+                        xp_reward: difficulty ? 10 * (Number(difficulty) + 1) : 10 * (Number(task.difficulty) + 1),
+                    }).then(r => {
+                        console.log(r);
+                        window.location.reload();
+                    })}>
                     Update
                 </Button>
             </div>

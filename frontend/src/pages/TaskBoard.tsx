@@ -3,10 +3,15 @@ import {useAxios} from "@/contexts/AxiosContext.tsx";
 import {useEffect, useState} from "react";
 import {IoAddOutline} from "react-icons/io5";
 import {Link} from "react-router-dom";
+import {Progress} from "@/components/ui/progress.tsx";
+import {computeLevel, getXp} from "@/lib/utils.ts";
 
 function Taskboard() {
     const client = useAxios();
     const [tasks, setTasks] = useState<any[]>([]);
+    const [level, setLevel] = useState(0);
+    const [progress, setProgress] = useState(0);
+
 
     const getTasks = async () => {
         try {
@@ -20,15 +25,28 @@ function Taskboard() {
         }
     };
 
+    const initLevel = async () => {
+        const xp = await getXp(client);
+        const res = computeLevel(Number(xp));
+
+        setLevel(res.level);
+        setProgress(res.progress);
+    };
+
     useEffect(() => {
-        getTasks().then(r => console.log(r))
+        getTasks().then(r => console.log(r));
+        initLevel().then(r => console.log(r));
     }, []);
 
     return (
         <>
-            <div>
+            <div className={`mb-5 flex justify-between items-center gap-3`}>
                 {/*FIXME*/}
-                Your XP & Level
+                <h1 className={`min-w-fit`}>
+                    Level <span className={`font-bold`}>{level}</span>
+                </h1>
+
+                <Progress value={progress} />
             </div>
             <div className={`mb-5 flex justify-between items-center`}>
                 <h1 className={`text-xl`}>
