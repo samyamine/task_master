@@ -8,11 +8,11 @@ export default function Header() {
             </h1>
 
             <nav>
-                <ul className={`flex gap-2 items-center`}>
-                    <li><NavLink to={`/`}>Dashboard</NavLink></li>
-                    <li><NavLink to={`rewards/`}>Rewards</NavLink></li>
-                    <li><NavLink to={`taskboard/`}>Taskboard</NavLink></li>
-                    <li><NavLink to={`questboard/`}>Questboard</NavLink></li>
+                <ul className={`flex gap-3 items-center`}>
+                    <li className={`underline underline-offset-4`}><NavLink to={`/`}>Dashboard</NavLink></li>
+                    <li className={`underline underline-offset-4`}><NavLink to={`rewards/`}>Rewards</NavLink></li>
+                    <li className={`underline underline-offset-4`}><NavLink to={`taskboard/`}>Taskboard</NavLink></li>
+                    <li className={`underline underline-offset-4`}><NavLink to={`questboard/`}>Questboard</NavLink></li>
                 </ul>
             </nav>
         </div>

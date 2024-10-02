@@ -9,7 +9,6 @@ import {Input} from "@/components/ui/input.tsx";
 import {Textarea} from "@/components/ui/textarea.tsx";
 import {Checkbox} from "@/components/ui/checkbox.tsx";
 
-// FIXME: Unexpected behaviour when updating quest tasks
 function Quest() {
     const client = useAxios();
     const navigate = useNavigate();

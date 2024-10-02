@@ -15,7 +15,6 @@ function Taskboard() {
     };
 
     useEffect(() => {
-        // getTasks().then(r => console.log(r));
         initTasks().then(r => console.log(r));
     }, []);
 

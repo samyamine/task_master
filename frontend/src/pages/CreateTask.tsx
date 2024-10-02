@@ -18,34 +18,6 @@ function CreateTask() {
     const [deadline, setDeadline] = useState("");
     const [maxDateTime, setMaxDateTime] = useState("");
 
-    // const createTask = async () => {
-    //     if (typeof difficulty === "undefined") {
-    //         console.log("Difficulty is undefined");
-    //         return;
-    //     }
-    //     if (title.length === 0 || description.length === 0 || deadline.length === 0) {
-    //         console.log("Please fill all information");
-    //         return;
-    //     }
-    //
-    //     try {
-    //         const response = await client.post("/api/tasks/", {
-    //             title: title,
-    //             description: description,
-    //             completed: false,
-    //             difficulty: difficulty,
-    //             deadline: new Date(deadline),
-    //             xp_reward: 10 * (difficulty + 1),
-    //         });
-    //
-    //         console.log(response.data);
-    //         navigate("/taskboard/");
-    //
-    //     } catch (error) {
-    //         console.log(error);
-    //     }
-    // };
-
     useEffect(() => {
         const now = new Date(); // Date actuelle
         const oneYearFromNow = new Date();

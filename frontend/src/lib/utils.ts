@@ -37,12 +37,16 @@ function formatDateTime(date: Date) {
 
 async function getXp(client: AxiosInstance) {
     try {
-        const response = await client.get(`/api/total_xp/`);
-        console.log(response.data);
+        const tasks_xp = await client.get(`/api/total_xp/`);
+        const rewards_xp = await client.get(`/api/rewards/total_xp/`);
+        console.log(tasks_xp.data);
+        console.log(rewards_xp.data);
 
-        return Number(response.data["total_xp"]);
+        return Number(tasks_xp.data.total_xp) + Number(rewards_xp.data.total_xp);
+
     } catch (error) {
         console.log(error);
+        return 0;
     }
 }
 

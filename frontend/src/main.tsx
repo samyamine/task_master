@@ -2,7 +2,7 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import App from './App.tsx'
 import './index.css'
-import {createHashRouter, RouterProvider} from "react-router-dom";
+import {createHashRouter, Navigate, RouterProvider} from "react-router-dom";
 import TaskBoard from "@/pages/TaskBoard.tsx";
 import Task from "@/pages/Task.tsx";
 import CreateTask from "@/pages/CreateTask.tsx";
@@ -11,14 +11,22 @@ import QuestBoard from "@/pages/QuestBoard.tsx";
 import {AxiosProvider} from "@/contexts/AxiosContext.tsx";
 import Quest from "@/pages/Quest.tsx";
 import Rewards from "@/pages/Rewards.tsx";
+import Dashboard from "@/pages/Dashboard.tsx";
 
 
-// createBrowserRouter
 const router = createHashRouter([
     {
         path: "/",
         element: <App />,
         children: [
+            {
+                path: "",
+                element: <Navigate to="/dashboard" replace />,
+            },
+            {
+                path: "dashboard/",
+                element: <Dashboard />,
+            },
             {
                 path: "taskboard/",
                 element: <TaskBoard />,
@@ -60,4 +68,4 @@ createRoot(document.getElementById('root')!).render(
             </AxiosProvider>
         </StrictMode>,
     </div>
-)
+);

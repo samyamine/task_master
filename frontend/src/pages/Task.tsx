@@ -136,7 +136,7 @@ function Task() {
                            type="datetime-local"
                            id="deadline"
                            name="deadline"
-                           defaultValue={deadline}  // formatDateTime(new Date(task.deadline))
+                           defaultValue={deadline}
                            min={deadline}
                            max={maxDateTime}
                            onChange={(e) => setDeadline(e.target.value)}/>
