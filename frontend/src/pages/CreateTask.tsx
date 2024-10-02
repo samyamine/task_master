@@ -16,6 +16,7 @@ function CreateTask() {
     const [description, setDescription] = useState("");
     const [difficulty, setDifficulty] = useState<number>(-1);
     const [deadline, setDeadline] = useState("");
+    const [estimatedDuration, setEstimatedDuration] = useState("00:00");
     const [maxDateTime, setMaxDateTime] = useState("");
 
     useEffect(() => {
@@ -27,8 +28,7 @@ function CreateTask() {
         setMaxDateTime(formatDateTime(oneYearFromNow));
     }, []);
 
-    console.log(deadline);
-    console.log(maxDateTime);
+    console.log(estimatedDuration);
 
     return (
         <>
@@ -61,6 +61,19 @@ function CreateTask() {
                     </Select>
                 </div>
 
+                {/* FIXME: Estimated time */}
+                <div className={`flex flex-col gap-1`}>
+                    <Label htmlFor={`duration`}>Estimated duration</Label>
+                    <input className={`px-2 py-1 rounded-md border-[1px] border-gray-200 shadow-sm text-sm`}
+                           type="time"
+                           id="duration"
+                           name="duration"
+                           value={estimatedDuration}
+                           min={`00:00`}
+                           max={`24:00`}
+                           onChange={(e) => setEstimatedDuration(e.target.value)}/>
+                </div>
+
                 <div className={`flex flex-col gap-1`}>
                     <Label htmlFor={`deadline`}>Deadline</Label>
                     <input className={`px-2 py-1 rounded-md border-[1px] border-gray-200 shadow-sm text-sm`}
@@ -73,10 +86,11 @@ function CreateTask() {
                            onChange={(e) => setDeadline(e.target.value)}/>
                 </div>
 
-                <Button className={`mt-5`} onClick={() => createTask(client,  {title, description, deadline, difficulty}).then(r => {
-                        console.log(r);
-                        navigate("/taskboard/");
-                    })}>
+                <Button className={`mt-5`}
+                        onClick={() => createTask(client, {title, description, deadline, difficulty, estimated_duration: `${estimatedDuration}:00`}).then(r => {
+                            console.log(r);
+                            navigate("/taskboard/");
+                        })}>
                     Create
                 </Button>
             </div>

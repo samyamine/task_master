@@ -75,7 +75,7 @@ async function getQuest(client: AxiosInstance, id: string) {
     }
 }
 
-async function createTask(client: AxiosInstance, data: { title: string, difficulty: number, description: string, deadline: string }) {
+async function createTask(client: AxiosInstance, data: { title: string, difficulty: number, description: string, deadline: string, estimated_duration: string }) {
     if (data.difficulty === -1) {
         console.log("Difficulty has not been provided");
         return;
@@ -93,6 +93,7 @@ async function createTask(client: AxiosInstance, data: { title: string, difficul
             difficulty: data.difficulty,
             deadline: new Date(data.deadline),
             xp_reward: 10 * (data.difficulty + 1),
+            estimated_duration: data.estimated_duration,
         });
 
         console.log(response.data);
