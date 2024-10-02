@@ -59,16 +59,17 @@ function Task() {
                 </h1>
 
                 <div>
-                    <Button className={`mr-2 ${task.completed ? "bg-black" : "bg-emerald-500"}`} onClick={() => updateTask(client, String(id), {completed: !task.completed}).then(r => {
-                            console.log(r);
-                            window.location.reload();
-                        })}>
+                    <Button className={`mr-2 ${task.completed ? "bg-black" : "bg-emerald-500"}`}
+                            onClick={() => updateTask(client, String(id), {completed: !task.completed}).then(r => {
+                                console.log(r);
+                                window.location.reload();
+                            })}>
                         {task.completed ? "Undone" : "Done"}
                     </Button>
                     <Button className={`bg-red-500`} onClick={() => deleteTask(client, String(id)).then(r => {
-                            console.log(r);
-                            navigate("/taskboard/");
-                        })}>
+                        console.log(r);
+                        navigate("/taskboard/");
+                    })}>
                         Delete
                     </Button>
                 </div>
@@ -76,7 +77,7 @@ function Task() {
             </div>
 
             <div className={`mb-5`}>
-                <CompletionBadge status={task.completed} />
+                <CompletionBadge status={task.completed}/>
             </div>
 
             <div className={`mb-1 flex items-center gap-2`}>
@@ -98,6 +99,11 @@ function Task() {
             </div>
 
             <div className={`mb-5 flex items-center gap-2`}>
+                <h2 className={`font-bold`}>Estimated duration:</h2>
+                <p>{task.estimated_duration.split(":")[0]}h {task.estimated_duration.split(":")[1]}min</p>
+            </div>
+
+            <div className={`mb-5 flex items-center gap-2`}>
                 <h2 className={`font-bold`}>XP when completed:</h2>
                 <p>{task.xp_reward} XP</p>
             </div>
@@ -108,7 +114,8 @@ function Task() {
                 </h2>
                 <div>
                     <Label htmlFor={`title`}>Title</Label>
-                    <Input id={`title`} defaultValue={task.title} type="text" onChange={(e) => setTitle(e.target.value)}/>
+                    <Input id={`title`} defaultValue={task.title} type="text"
+                           onChange={(e) => setTitle(e.target.value)}/>
                 </div>
 
                 <div>
@@ -118,7 +125,8 @@ function Task() {
 
                 <div>
                     <Label>Difficulty</Label>
-                    <Select defaultValue={String(task.difficulty)} onValueChange={(value) => setDifficulty(Number(value))}>
+                    <Select defaultValue={String(task.difficulty)}
+                            onValueChange={(value) => setDifficulty(Number(value))}>
                         <SelectTrigger className="w-[280px]">
                             <SelectValue placeholder="Select..."/>
                         </SelectTrigger>
@@ -142,16 +150,16 @@ function Task() {
                            onChange={(e) => setDeadline(e.target.value)}/>
                 </div>
 
-                <Button className={`mt-5`} onClick={() => updateTask(client, String(id),{
-                        title: title ?? task.title,
-                        description: description ?? task.description,
-                        difficulty: difficulty ?? task.difficulty,
-                        deadline:  deadline ? new Date(deadline) : new Date(task.deadline),
-                        xp_reward: difficulty ? 10 * (Number(difficulty) + 1) : 10 * (Number(task.difficulty) + 1),
-                    }).then(r => {
-                        console.log(r);
-                        window.location.reload();
-                    })}>
+                <Button className={`mt-5`} onClick={() => updateTask(client, String(id), {
+                    title: title ?? task.title,
+                    description: description ?? task.description,
+                    difficulty: difficulty ?? task.difficulty,
+                    deadline: deadline ? new Date(deadline) : new Date(task.deadline),
+                    xp_reward: difficulty ? 10 * (Number(difficulty) + 1) : 10 * (Number(task.difficulty) + 1),
+                }).then(r => {
+                    console.log(r);
+                    window.location.reload();
+                })}>
                     Update
                 </Button>
             </div>
