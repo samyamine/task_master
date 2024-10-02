@@ -28,4 +28,5 @@ urlpatterns = [
     path('api/', include(router.urls)),
     path('api/total_xp/', views.total_xp_view, name='total_xp'),
     path('api/rewards/', include('rewards.urls')),
+    path('api/tasks-quests-last-week/', views.tasks_quests_last_week, name='tasks_quests_last_week'),
 ]

@@ -1,3 +1,4 @@
+from datetime import timedelta
 from django.db.models import Sum
 from django.shortcuts import render
 from rest_framework import viewsets
@@ -5,6 +6,9 @@ from .serializers import TaskSerializer, QuestSerializer
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from .models import Task, Quest
+from django.utils.timezone import now
+from django.db.models import Count
+from django.db.models.functions import TruncDate
 
 
 # Create your views here.
@@ -28,6 +32,10 @@ class QuestView(viewsets.ModelViewSet):
     serializer_class = QuestSerializer
     queryset = Quest.objects.all()
 
+    def perform_update(self, serializer):
+        instance = serializer.save()
+        instance.check_progress()
+
 
 @api_view(['GET'])
 def total_xp_view(request):
@@ -49,3 +57,41 @@ def total_xp_view(request):
 
     return Response({"total_xp": total_xp})
 
+
+@api_view(['GET'])
+def tasks_quests_last_week(request):
+    today = now().date()
+    week = today - timedelta(days=6)
+
+    task_counts = (
+        Task.objects.filter(created_at__date__gte=week)
+        .annotate(day=TruncDate('created_at'))
+        .values('day')
+        .annotate(count=Count('id'))
+        .order_by('day')
+    )
+
+    quest_counts = (
+        Quest.objects.filter(created_at__date__gte=week)
+        .annotate(day=TruncDate('created_at'))
+        .values('day')
+        .annotate(count=Count('id'))
+        .order_by('day')
+    )
+
+    result = {}
+
+    for task in list(task_counts):
+        day = task["day"]
+        result[day] = {"day": day, "tasks": task["count"], "quests": 0}
+
+    for quest in list(quest_counts):
+        day = quest["day"]
+        if day in result:
+            result[day]["quests"] = quest["count"]
+        else:
+            result[day] = {"day": day, "tasks": 0, "quests": quest["count"]}
+
+    result = list(result.values())
+
+    return Response(result)

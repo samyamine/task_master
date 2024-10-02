@@ -8,8 +8,8 @@ class Task(models.Model):
     description = models.TextField(blank=True)
     completed = models.BooleanField(default=False)
     difficulty = models.IntegerField(choices=[(0, 'Facile'), (1, 'Moyen'), (2, 'Difficile')])
-    xp_reward = models.IntegerField(default=10)  # Récompense en XP pour la complétion
-    # estimated_duration = models.DurationField()  # Durée estimée
+    xp_reward = models.IntegerField(default=10)
+    estimated_duration = models.DurationField()
     deadline = models.DateTimeField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
